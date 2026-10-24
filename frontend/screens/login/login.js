@@ -38,6 +38,7 @@ export default function LoginScreen({ navigation, onNavigate }) {
   const [rememberMe, setRememberMe] = useState(true);
   const [showPassword, setShowPassword] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
 
   const handleBackToLanding = () => {
     if (navigation && navigation.goBack) {
@@ -47,16 +48,43 @@ export default function LoginScreen({ navigation, onNavigate }) {
     }
   };
 
+  const handleAutoFill = () => {
+    setEmail('1234');
+    setPassword('1234');
+    setErrorMessage('');
+  };
+
   const handleLogin = () => {
-    if (!email) {
-      alert('Please enter your email address.');
+    const trimmedEmail = email.trim();
+    const trimmedPassword = password.trim();
+
+    // Check credentials: 1234 and 1234
+    const isValid =
+      (trimmedEmail === '1234' ||
+        trimmedEmail === '1234@foodmind.ai' ||
+        trimmedEmail.toLowerCase() === 'admin') &&
+      trimmedPassword === '1234';
+
+    if (!trimmedEmail || !trimmedPassword) {
+      setErrorMessage('Please enter Email: 1234 and Password: 1234.');
       return;
     }
+
+    if (!isValid) {
+      setErrorMessage('Invalid credentials. Use Email: 1234 | Password: 1234');
+      return;
+    }
+
+    setErrorMessage('');
     setIsSubmitting(true);
     setTimeout(() => {
       setIsSubmitting(false);
-      alert(`Welcome back to FoodMind AI!\nSigned in as: ${email}`);
-    }, 700);
+      if (navigation && navigation.navigate) {
+        navigation.navigate('CompanyDashboard');
+      } else if (onNavigate) {
+        onNavigate('CompanyDashboard');
+      }
+    }, 300);
   };
 
   return (
@@ -366,6 +394,27 @@ export default function LoginScreen({ navigation, onNavigate }) {
                     <Text style={styles.forgotPasswordLink}>Forgot password?</Text>
                   </TouchableOpacity>
                 </View>
+
+                {/* Admin Credentials Helper Badge */}
+                <TouchableOpacity
+                  style={styles.credentialsHintPill}
+                  onPress={handleAutoFill}
+                  activeOpacity={0.8}
+                >
+                  <Text style={styles.credentialsHintText}>
+                    🔑 <Text style={styles.credentialsBold}>Admin Access:</Text> 1234 • 1234
+                  </Text>
+                  <View style={styles.credentialsFillBadge}>
+                    <Text style={styles.credentialsFillText}>Auto-Fill</Text>
+                  </View>
+                </TouchableOpacity>
+
+                {/* Error Banner */}
+                {errorMessage ? (
+                  <View style={styles.errorBannerBox}>
+                    <Text style={styles.errorBannerText}>⚠️ {errorMessage}</Text>
+                  </View>
+                ) : null}
 
                 {/* Sign In Button */}
                 <TouchableOpacity
@@ -885,6 +934,50 @@ const styles = StyleSheet.create({
   forgotPasswordLink: {
     fontSize: 13,
     color: COLORS.primaryGreen,
+    fontWeight: '600',
+  },
+
+  // Credentials Hint & Error Box
+  credentialsHintPill: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    backgroundColor: COLORS.lightMint,
+    borderWidth: 1,
+    borderColor: COLORS.mintBorder,
+    paddingVertical: 7,
+    paddingHorizontal: 10,
+    borderRadius: 8,
+  },
+  credentialsHintText: {
+    fontSize: 11.5,
+    color: COLORS.primaryGreen,
+  },
+  credentialsBold: {
+    fontWeight: '700',
+  },
+  credentialsFillBadge: {
+    backgroundColor: COLORS.primaryGreen,
+    paddingVertical: 3,
+    paddingHorizontal: 7,
+    borderRadius: 5,
+  },
+  credentialsFillText: {
+    color: '#FFFFFF',
+    fontSize: 9.5,
+    fontWeight: '700',
+  },
+  errorBannerBox: {
+    backgroundColor: '#FEE2E2',
+    borderWidth: 1,
+    borderColor: '#FCA5A5',
+    borderRadius: 8,
+    paddingVertical: 8,
+    paddingHorizontal: 10,
+  },
+  errorBannerText: {
+    color: '#B91C1C',
+    fontSize: 12,
     fontWeight: '600',
   },
 

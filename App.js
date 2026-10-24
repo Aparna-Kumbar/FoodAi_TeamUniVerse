@@ -3,6 +3,7 @@ import { View, StyleSheet } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import LandingScreen from './frontend/screens/login/landing';
 import LoginScreen from './frontend/screens/login/login';
+import CompanyDashboardScreen from './frontend/screens/dashboard/companyDashboard';
 
 export default function App() {
   const [currentScreen, setCurrentScreen] = useState('Landing');
@@ -28,6 +29,12 @@ export default function App() {
       )}
       {currentScreen === 'Login' && (
         <LoginScreen
+          navigation={navigation}
+          onNavigate={(screen) => setCurrentScreen(screen)}
+        />
+      )}
+      {currentScreen === 'CompanyDashboard' && (
+        <CompanyDashboardScreen
           navigation={navigation}
           onNavigate={(screen) => setCurrentScreen(screen)}
         />

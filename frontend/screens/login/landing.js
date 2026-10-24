@@ -50,7 +50,15 @@ export default function LandingScreen({ navigation, onNavigate }) {
     }
   };
 
-  const navLinks = ['Home', 'Features', 'Solutions', 'Pricing', 'About', 'Contact'];
+  const handleNavigateToDashboard = () => {
+    if (navigation && navigation.navigate) {
+      navigation.navigate('CompanyDashboard');
+    } else if (onNavigate) {
+      onNavigate('CompanyDashboard');
+    }
+  };
+
+  const navLinks = ['Home', 'Features', 'Solutions', 'Dashboard', 'Pricing', 'About', 'Contact'];
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -85,7 +93,12 @@ export default function LandingScreen({ navigation, onNavigate }) {
                   <TouchableOpacity
                     key={item}
                     style={[styles.navLinkItem, activeNav === item && styles.navLinkItemActive]}
-                    onPress={() => setActiveNav(item)}
+                    onPress={() => {
+                      setActiveNav(item);
+                      if (item === 'Dashboard') {
+                        handleNavigateToDashboard();
+                      }
+                    }}
                   >
                     <Text
                       style={[
@@ -350,7 +363,11 @@ export default function LandingScreen({ navigation, onNavigate }) {
               {/* ----------------- LAYERED DEVICE MOCKUPS ----------------- */}
               <View style={styles.deviceMockupsContainer}>
                 {/* 1. LAPTOP MOCKUP */}
-                <View style={styles.laptopFrame}>
+                <TouchableOpacity
+                  style={styles.laptopFrame}
+                  onPress={handleNavigateToDashboard}
+                  activeOpacity={0.9}
+                >
                   {/* Laptop Top Bezel & Camera */}
                   <View style={styles.laptopBezel}>
                     <View style={styles.windowControls}>
@@ -447,7 +464,7 @@ export default function LandingScreen({ navigation, onNavigate }) {
 
                   {/* Laptop Base Stand */}
                   <View style={styles.laptopBaseBar} />
-                </View>
+                </TouchableOpacity>
 
                 {/* 2. SMARTPHONE MOCKUP */}
                 <View style={styles.phoneMockupFrame}>
